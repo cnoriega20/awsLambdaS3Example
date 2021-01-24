@@ -57,6 +57,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
     	
     	try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(input));
+			//Marshall Json data to an array of Products.
 			products = gson.fromJson(br, Product[].class);
 			br.close();
 		} catch (JsonIOException e) {
