@@ -12,6 +12,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.aws.lambda.domain.Product;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
@@ -21,7 +25,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 
        Regions clientRegion = Regions.US_EAST_1;
        String  bucket ="handy-inventory-bucket";
-       String key = "test.txt";
+       String key = "handy-tool-catalog.json";
        S3Object s3Object = null;
        String textContent = "";
        
@@ -37,7 +41,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
     	   context.getLogger().log("Content: ");
     	   
     	   // Get an entire object, overriding the specified response headers, and print the object's content.
-    	   textContent = displayS3TextFile(s3Object.getObjectContent(), context);
+    	   textContent = displayS3JsonString(s3Object.getObjectContent(), context);
     	   context.getLogger().log("Line from text file: " + textContent); 
     	   
 		} catch (Exception e) {
@@ -46,17 +50,25 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
         return textContent;
     }
     
-    private static String displayS3TextFile(InputStream input, Context context) {
+    private static String displayS3JsonString(InputStream input, Context context) {
     	String outputStr = null;
+    	Gson gson = new Gson();
+    	Product[] products = null;
+    	
     	try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(input));
-			outputStr = br.readLine();
+			products = gson.fromJson(br, Product[].class);
 			br.close();
-		} catch (IOException e) {
+		} catch (JsonIOException e) {
 			context.getLogger().log("Error: " + e.getMessage());
 			e.printStackTrace();
+		}catch(JsonSyntaxException ex) {
+			context.getLogger().log("Error: " + ex.getMessage());
+			ex.printStackTrace();
+		} catch (IOException e) {			
+			e.printStackTrace();
 		}
-    	return outputStr;
+    	return products[0].toString();
     }
 
 }
