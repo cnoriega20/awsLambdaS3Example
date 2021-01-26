@@ -71,7 +71,7 @@ public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequ
     	
     	Gson gson = new Gson();
     	Product[] products = null;
-    	//Optional<Product> finalProduct = Optional.empty();
+    	
     	Product product = new Product();
     	try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(input));
