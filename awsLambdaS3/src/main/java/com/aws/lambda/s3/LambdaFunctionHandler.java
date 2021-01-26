@@ -25,7 +25,7 @@ public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequ
 
     @Override
     public String handleRequest(HttpQueryStringRequest request, Context context) {
-        context.getLogger().log("Input: " + request);
+        context.getLogger().log("Input: " + request +"\n");
         
        return processJsonData(request, context);
     }
@@ -36,23 +36,30 @@ public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequ
 		String bucket = "handy-inventory-bucket";
 		String key = "handy-tool-catalog.json";
 		S3Object s3Object = null;
-		Product product = null;
+		Product product = new Product();
 
 		try {
 			AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion(clientRegion).build();
-			context.getLogger().log("Downloading an object");
+			context.getLogger().log("Downloading an object \n");
 
 			// Get an object and print its contents.
 			s3Object = s3Client.getObject(new GetObjectRequest(bucket, key));
-			context.getLogger().log("Content-Type" + s3Object.getObjectMetadata().getContentType());
-			context.getLogger().log("Content: ");
-
-			String strId = request.getQueryStringParameters().get("id");
+			context.getLogger().log("Content-Type: " + s3Object.getObjectMetadata().getContentType() +"\n");
+			context.getLogger().log("Content: \n");
+			
+			
+			context.getLogger().log("Getting the id from Map...");
+			String strId = (String)request.getQueryStringParameters().get("id");
+			context.getLogger().log("String id: " + strId);
+			
 			Integer prodId = Integer.parseInt(strId);
+			context.getLogger().log("Prod id: " + prodId);
 
 			// Invoking getProductById method.
-
+			context.getLogger().log("Invoking getProductById method");
+			
 			product = getProductById(prodId, s3Object.getObjectContent(), context);
+			context.getLogger().log("Product: " + product.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
