@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -15,22 +14,23 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.aws.lambda.domain.HttpProductResponse;
 import com.aws.lambda.domain.HttpQueryStringRequest;
 import com.aws.lambda.domain.Product;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequest, String> {
+public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequest, HttpProductResponse> {
 
     @Override
-    public String handleRequest(HttpQueryStringRequest request, Context context) {
+    public HttpProductResponse handleRequest(HttpQueryStringRequest request, Context context) {
         context.getLogger().log("Input: " + request +"\n");
         
        return processJsonData(request, context);
     }
 
-	public String processJsonData(HttpQueryStringRequest request, Context context) {
+	public HttpProductResponse processJsonData(HttpQueryStringRequest request, Context context) {
 		
 		Regions clientRegion = Regions.US_EAST_1;
 		String bucket = "handy-inventory-bucket";
@@ -64,7 +64,7 @@ public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequ
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return product.toString();
+		return new HttpProductResponse(product);
 	}
     
     private Product getProductById(Integer id, InputStream input, Context context) throws IOException {
