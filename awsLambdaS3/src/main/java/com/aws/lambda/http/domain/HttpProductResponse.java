@@ -1,7 +1,9 @@
-package com.aws.lambda.domain;
+package com.aws.lambda.http.domain;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.aws.lambda.domain.Product;
 
 public class HttpProductResponse {
 

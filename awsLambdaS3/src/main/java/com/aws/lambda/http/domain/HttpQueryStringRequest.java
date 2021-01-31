@@ -1,4 +1,4 @@
-package com.aws.lambda.domain;
+package com.aws.lambda.http.domain;
 
 import java.util.Map;
 
