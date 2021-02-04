@@ -53,6 +53,13 @@ public class LambdaFunctionHandler extends InventoryS3Helper implements RequestH
 			String strId = (String)request.getQueryStringParameters().get("id");
 			context.getLogger().log("String id: " + strId);
 			
+			if(strId.equalsIgnoreCase("all")) {
+				Product[] products = getAllProducts();
+				HttpProductResponse httpProductResponse = new HttpProductResponse(products);
+				return httpProductResponse;
+			}
+			
+			
 			Integer prodId = Integer.parseInt(strId);
 			context.getLogger().log("Prod id: " + prodId);
 

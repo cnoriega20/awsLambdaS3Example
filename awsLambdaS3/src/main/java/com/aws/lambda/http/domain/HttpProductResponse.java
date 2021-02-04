@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aws.lambda.domain.Product;
+import com.google.gson.Gson;
 
 public class HttpProductResponse {
 
@@ -22,6 +23,12 @@ public class HttpProductResponse {
 	public HttpProductResponse(Product product) {
 		this();
 		this.body = product.toString();
+	}
+	
+	public HttpProductResponse(Product[] products) {
+		this();
+		Gson gson = new Gson();
+		this.body = gson.toJson(products);
 	}
 	
 	public String getBody() {
