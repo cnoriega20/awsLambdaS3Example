@@ -15,13 +15,14 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.aws.lambda.domain.Product;
+import com.aws.lambda.helpers.InventoryS3Helper;
 import com.aws.lambda.http.domain.HttpProductResponse;
 import com.aws.lambda.http.domain.HttpQueryStringRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequest, HttpProductResponse> {
+public class LambdaFunctionHandler extends InventoryS3Helper implements RequestHandler<HttpQueryStringRequest, HttpProductResponse> {
 
     @Override
     public HttpProductResponse handleRequest(HttpQueryStringRequest request, Context context) {
@@ -69,16 +70,11 @@ public class LambdaFunctionHandler implements RequestHandler<HttpQueryStringRequ
     
     private Product getProductById(Integer id, InputStream input, Context context) throws IOException {
     	
-    	Gson gson = new Gson();
-    	Product[] products = null;
-    	
+    	  	
     	Product product = new Product();
     	try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(input));
-			
-			//Marshall Json data to an array of Products.
-			
-			products = gson.fromJson(br, Product[].class);
+
+			Product[] products = getAllProducts();
 			List<Product> productList = Arrays.asList(products);
 			
 			product = productList.stream().
