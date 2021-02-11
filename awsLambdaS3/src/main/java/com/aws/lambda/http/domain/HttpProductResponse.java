@@ -11,7 +11,7 @@ public class HttpProductResponse {
 	private String body;
 	
 
-	private String statusCode;
+	private String statusCode = "200";
 	
 	private Map<String, String> headers = new HashMap<>();
 
